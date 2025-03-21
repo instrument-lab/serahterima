@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Web</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            background: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #produkInput {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section">
+            <h2>CRUDE</h2>
+            <button onclick="sendData('CRUDE', 'F2')">CRUDE F2</button>
+            <button onclick="sendData('CRUDE', 'F3')">CRUDE F3</button>
+            <button onclick="sendData('CRUDE', 'F4')">CRUDE F4</button>
+        </div>
+        <div class="section">
+            <h2>PRODUK</h2>
+            <button onclick="showProdukInput('F2')">PRODUK F2</button>
+            <button onclick="showProdukInput('F3')">PRODUK F3</button>
+            <button onclick="showProdukInput('F4')">PRODUK F4</button>
+            <div id="produkInput">
+                <input type="text" id="kodeProduk" placeholder="Masukkan Kode Produk">
+                <button onclick="submitProduk()">Kirim</button>
+            </div>
+        </div>
+        <div class="section">
+            <h2>SLAG</h2>
+            <button onclick="sendData('SLAG', 'F2')">SLAG F2</button>
+            <button onclick="sendData('SLAG', 'F3')">SLAG F3</button>
+            <button onclick="sendData('SLAG', 'F4')">SLAG F4</button>
+        </div>
+    </div>
+    
+    <script>
+        let selectedUnit = '';
+        const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSebzxBz1c6DhrGCSG1ikEZNGASjRqFrpXrrdtWR1xbhdVfKfw/formResponse";
+
+        function sendData(jenis, unit, kodeProduk = '-') {
+            let formData = new FormData();
+            formData.append("entry.153654902", jenis);
+            formData.append("entry.252785184", unit);
+            formData.append("entry.970285177", kodeProduk);
+            
+            fetch(formURL, {
+                method: "POST",
+                body: formData,
+                mode: "no-cors"
+            }).then(() => {
+                alert("Data berhasil dikirim ke Google Sheets!");
+            }).catch(err => console.error("Error:", err));
+        }
+
+        function showProdukInput(unit) {
+            selectedUnit = unit;
+            document.getElementById('produkInput').style.display = 'block';
+        }
+
+        function submitProduk() {
+            let kodeProduk = document.getElementById('kodeProduk').value;
+            if (kodeProduk.trim() === '') {
+                alert('Kode Produk harus diisi!');
+                return;
+            }
+            sendData('PRODUK', selectedUnit, kodeProduk);
+            document.getElementById('produkInput').style.display = 'none';
+            document.getElementById('kodeProduk').value = '';
+        }
+    </script>
+</body>
+</html>
